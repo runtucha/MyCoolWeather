@@ -1,10 +1,13 @@
 package com.example.mycoolweather.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.mycoolweather.db.City;
 import com.example.mycoolweather.db.County;
 import com.example.mycoolweather.db.Province;
+import com.example.mycoolweather.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,6 +16,8 @@ import org.json.JSONObject;
  * Created by glenn_cui on 17-8-1.
  */
 public class Utility {
+
+    public static String TAG ="gtest";
 
     public static boolean handleProvinceResponse(String response){
         if (!TextUtils.isEmpty(response)){
@@ -83,6 +88,25 @@ public class Utility {
 
         }
         return false;
+    }
+
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            Log.d(TAG, "handleWeatherResponse: responese is " + response);
+
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent =jsonArray.getJSONObject(0).toString();
+            Log.d(TAG, "handleWeatherResponse:weatherContent [0] is" + weatherContent);
+
+
+            return new Gson().fromJson(weatherContent,Weather.class);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
 
